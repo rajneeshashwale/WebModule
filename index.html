@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Interactive Resume Builder</title>
+  <meta name="description"
+    content="Responsive, animated resume builder with live preview, dynamic sections, progress bar, and print-to-PDF." />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <div class="nav">
+      <div class="logo">Resume Builder</div>
+      <span class="badge"></span>
+      <div style="margin-left:auto; display:flex; gap:8px;">
+        <button class="btn ghost" id="btnClear">Reset</button>
+        <button class="btn primary" id="btnDownload">Download PDF</button>
+      </div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress" aria-label="Form completion progress">
+        <div class="bar" id="progressBar"></div>
+      </div>
+      <div class="progress-meta"><span id="progressText">0% complete</span><span id="progressTips">Start by entering
+          your name.</span></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- FORM PANEL -->
+    <section class="panel form-panel" aria-labelledby="formTitle">
+      <form id="resumeForm" autocomplete="off">
+        <h2 id="formTitle">Your Details</h2>
+        <div class="sub">Fill the form; the resume preview updates in real time. Add multiple entries for Education and
+          Experience. Use Reset anytime.</div>
+
+        <div class="field-grid">
+          <div class="field">
+            <label for="name">Full Name</label>
+            <input id="name" name="name" type="text" placeholder="e.g., Rajneesh Ashwale" />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="e.g., you@example.com" />
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" type="tel" placeholder="e.g., +91 98765 43210" />
+          </div>
+          <div class="field">
+            <label for="location">Location</label>
+            <input id="location" name="location" type="text" placeholder="e.g., Nagpur, IN" />
+          </div>
+          <div class="field col-12">
+            <label for="summary">Profile Summary</label>
+            <textarea id="summary" name="summary"
+              placeholder="A concise 2–3 line overview of your skills and goals..."></textarea>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Skills -->
+        <div class="section-head">
+          <h3 style="margin:0">Skills</h3>
+        </div>
+        <div class="row">
+          <div class="col-8 field">
+            <label for="skillInput">Add custom skill</label>
+            <input id="skillInput" type="text" placeholder="Type a skill and press Enter (e.g., React)" />
+          </div>
+          <div class="col-4" style="display:flex; align-items:flex-end;">
+            <button type="button" class="btn" id="addSkillBtn">Add Skill</button>
+          </div>
+        </div>
+        <div class="skills" id="skillChips" aria-live="polite"></div>
+        <div style="margin-top:8px; color: var(--muted); font-size:12px">Or choose quick skills:</div>
+        <div class="skills" id="quickSkills">
+          <!-- Quick skills rendered by JS -->
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Education -->
+        <div class="section-head">
+          <h3 style="margin:0">Education</h3>
+          <button type="button" class="btn" id="addEdu">+ Add Education</button>
+        </div>
+        <div id="eduList"></div>
+
+        <div class="divider"></div>
+
+        <!-- Experience -->
+        <div class="section-head">
+          <h3 style="margin:0">Experience</h3>
+          <button type="button" class="btn" id="addExp">+ Add Experience</button>
+        </div>
+        <div id="expList"></div>
+
+      </form>
+    </section>
+
+    <!-- PREVIEW PANEL -->
+    <section class="panel preview" aria-labelledby="previewTitle">
+      <h2 id="previewTitle">Live Preview</h2>
+      <div class="sub">This is how your resume will look. Use the Download PDF button when you're ready.</div>
+
+      <div class="resume" id="resume">
+        <div class="header">
+          <div class="name" id="pvName">Your Name</div>
+          <div class="contact" id="pvContact">you@example.com · +91 00000 00000 · City</div>
+        </div>
+
+        <div class="section" id="pvSummarySec" style="display:none;">
+          <div class="sec-title">Profile</div>
+          <div id="pvSummary" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="section" id="pvSkillSec" style="display:none;">
+          <div class="sec-title">Skills</div>
+          <div class="skills" id="pvSkills" style="margin-top:10px;"></div>
+        </div>
+
+        <div class="section" id="pvEduSec" style="display:none;">
+          <div class="sec-title">Education</div>
+          <div id="pvEdu"></div>
+        </div>
+
+        <div class="section" id="pvExpSec" style="display:none;">
+          <div class="sec-title">Experience</div>
+          <div id="pvExp"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <template id="eduTemplate">
+    <div class="panel" style="padding:12px; margin:8px 0;">
+      <div class="row">
+        <div class="col-6 field">
+          <label>Degree / Course</label>
+          <input type="text" name="degree" placeholder="B.Tech in CSE" />
+        </div>
+        <div class="col-6 field">
+          <label>Institution</label>
+          <input type="text" name="school" placeholder="ABC Institute of Technology" />
+        </div>
+        <div class="col-4 field">
+          <label>Start Year</label>
+          <input type="text" name="start" placeholder="2021" />
+        </div>
+        <div class="col-4 field">
+          <label>End Year</label>
+          <input type="text" name="end" placeholder="2025" />
+        </div>
+        <div class="col-4 field">
+          <label>Grade / CGPA</label>
+          <input type="text" name="grade" placeholder="8.2 CGPA" />
+        </div>
+        <div class="col-12 field">
+          <label>Highlights</label>
+          <input type="text" name="notes" placeholder="Relevant coursework, achievements, etc." />
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:10px;">
+        <button type="button" class="btn danger btnRemove">Remove</button>
+      </div>
+    </div>
+  </template>
+
+  <template id="expTemplate">
+    <div class="panel" style="padding:12px; margin:8px 0;">
+      <div class="row">
+        <div class="col-6 field">
+          <label>Job Title</label>
+          <input type="text" name="title" placeholder="Frontend Developer" />
+        </div>
+        <div class="col-6 field">
+          <label>Company</label>
+          <input type="text" name="company" placeholder="EditKaro.in" />
+        </div>
+        <div class="col-6 field">
+          <label>Start</label>
+          <input type="text" name="start" placeholder="Jun 2024" />
+        </div>
+        <div class="col-6 field">
+          <label>End</label>
+          <input type="text" name="end" placeholder="Aug 2025 or Present" />
+        </div>
+        <div class="col-12 field">
+          <label>Achievements (separate by ;)</label>
+          <input type="text" name="bullets"
+            placeholder="Built responsive UI; Improved performance by 25%; Led 3-person team" />
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:10px;">
+        <button type="button" class="btn danger btnRemove">Remove</button>
+      </div>
+    </div>
+  </template>
+
+<script src="script.js"></script>
+</body>
+
+</html>
